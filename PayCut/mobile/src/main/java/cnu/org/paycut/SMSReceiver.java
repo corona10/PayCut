@@ -7,6 +7,10 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
+import java.util.List;
+
+import io.realm.Realm;
+
 public class SMSReceiver extends BroadcastReceiver {
 
   public SMSReceiver() {
@@ -17,6 +21,7 @@ public class SMSReceiver extends BroadcastReceiver {
     if (intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
       StringBuilder sms = new StringBuilder();
       Bundle bundle = intent.getExtras();
+      Realm realm = Realm.getInstance(context);
       if (bundle != null) {
         Object[] pdusObj = (Object[]) bundle.get("pdus");
 
@@ -29,8 +34,25 @@ public class SMSReceiver extends BroadcastReceiver {
           sms.append(smsMessage.getMessageBody());
           String phonenumber = smsMessage.getOriginatingAddress();
           String sms_contents = smsMessage.getMessageBody();
-          Log.d("sms phonenumber", phonenumber);
-          Log.d("sms contents", sms_contents);
+
+          Log.d("sms phonenumber1:", phonenumber);
+          Log.d("sms contents1: ", sms_contents);
+          SmsLog smsLog = SmsParser.parse(smsMessage);
+          if(smsLog != null) {
+            realm.beginTransaction();
+            SmsLog realmlog = realm.copyToRealm(smsLog);
+            realm.commitTransaction();
+            List<SmsLog> logList = realm.where(SmsLog.class).findAll();
+            Log.d("realm size", String.valueOf(logList.size()));
+
+            int total_price = 0;
+            for(int idx = 0; idx < logList.size(); idx++)
+            {
+              total_price += logList.get(idx).getPrice();
+            }
+            Log.d("total price",String.valueOf(total_price));
+          }
+
         }
       }
     }
