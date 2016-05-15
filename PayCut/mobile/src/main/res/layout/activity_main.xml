@@ -8,9 +8,21 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="cnu.org.paycut.MainActivity">
-
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:orientation="vertical"
+        android:layout_alignParentEnd="true" android:layout_marginEnd="209dp"
+        android:layout_marginTop="55dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hello World!" android:id="@+id/status_text"/>
+        <ListView
+            android:layout_width="356dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/menu_list" android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"/>
+    </LinearLayout>
 </RelativeLayout>
