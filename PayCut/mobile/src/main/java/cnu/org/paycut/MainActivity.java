@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
   private ArrayAdapter<String> m_Adapter;
   private TextView m_maxCostTextview;
   private TextView m_currentCostTextView;
+  private ProgressBar m_progressBar;
   private Realm realm;
 
   private CostManager costManager;
@@ -35,9 +37,11 @@ public class MainActivity extends AppCompatActivity {
     listView = (ListView)findViewById(R.id.menu_list);
     m_maxCostTextview = (TextView)findViewById(R.id.status_text);
     m_currentCostTextView = (TextView)findViewById(R.id.current_cost);
+    m_progressBar = (ProgressBar)findViewById(R.id.progressBar);
 
     m_maxCostTextview.setText(getMaxCost() + "원");
-    m_currentCostTextView.setText(getCurrentCost()+"원");
+    m_currentCostTextView.setText(getCurrentCost() + "원");
+    m_progressBar.setProgress(getProgressPercent());
 
     m_Adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1);
     listView.setAdapter(m_Adapter);
@@ -52,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     super.onPause();
     m_maxCostTextview.setText(getMaxCost() + "원");
     m_currentCostTextView.setText(getCurrentCost()+"원");
+    m_progressBar.setProgress(getProgressPercent());
   }
 
   public void onResume()
@@ -59,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     super.onResume();
     m_maxCostTextview.setText(getMaxCost() + "원");
     m_currentCostTextView.setText(getCurrentCost()+"원");
+    m_progressBar.setProgress(getProgressPercent());
   }
   public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -89,5 +95,17 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(this);
     int maxCost = Integer.parseInt(p.getString("maxCost","0"));
     return maxCost;
+  }
+
+  private int getProgressPercent()
+  {
+    float status = ((float)getCurrentCost()  / getMaxCost())*100;
+
+    if(status > 100)
+      status = 100;
+    else if(status < 0)
+      status = 0;
+    
+    return (int)status;
   }
 }
