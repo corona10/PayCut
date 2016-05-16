@@ -1,5 +1,7 @@
 package cnu.org.paycut;
 
+import java.util.Date;
+
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
 
@@ -9,7 +11,7 @@ import io.realm.annotations.Ignore;
 public class SmsLog extends RealmObject{
   private float price;
   private String store;
-  private String date;
+  private Date date;
   private boolean isSent;
   @Ignore
   private boolean isValid;
@@ -24,7 +26,7 @@ public class SmsLog extends RealmObject{
 
   }
 
-  public void setDate(String date) {
+  public void setDate(Date date) {
     this.date = date;
   }
 
@@ -40,7 +42,7 @@ public class SmsLog extends RealmObject{
     this.store = store;
   }
 
-  public String getDate() {
+  public Date getDate() {
     return date;
   }
 

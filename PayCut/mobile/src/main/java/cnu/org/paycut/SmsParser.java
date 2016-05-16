@@ -3,6 +3,7 @@ package cnu.org.paycut;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -42,10 +43,15 @@ public class SmsParser {
       store = store.trim();
 
       SimpleDateFormat formatter = new SimpleDateFormat ( "yyyy.MM.dd HH:mm:ss", Locale.KOREA );
-      Date currentTime = new Date ( );
       String dTime = formatter.format(message.getTimestampMillis());
-
-      log.setDate(dTime);
+      Date currentTime = null;
+      try {
+        currentTime = formatter.parse(dTime);
+      } catch (ParseException e) {
+        e.printStackTrace();
+        return null;
+      }
+      log.setDate(currentTime);
       log.setPrice(Integer.parseInt(price));
       log.setStore(store);
 
