@@ -7,13 +7,13 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
-import java.util.List;
-
 import io.realm.Realm;
 
 public class SMSReceiver extends BroadcastReceiver {
 
+  private CostManager m_CostManager;
   public SMSReceiver() {
+
   }
 
   @Override
@@ -22,6 +22,7 @@ public class SMSReceiver extends BroadcastReceiver {
       StringBuilder sms = new StringBuilder();
       Bundle bundle = intent.getExtras();
       Realm realm = Realm.getInstance(context);
+      m_CostManager = new CostManager(context);
       if (bundle != null) {
         Object[] pdusObj = (Object[]) bundle.get("pdus");
 
@@ -39,17 +40,8 @@ public class SMSReceiver extends BroadcastReceiver {
           Log.d("sms contents1: ", sms_contents);
           SmsLog smsLog = SmsParser.parse(smsMessage);
           if(smsLog != null) {
-            realm.beginTransaction();
-            SmsLog realmlog = realm.copyToRealm(smsLog);
-            realm.commitTransaction();
-            List<SmsLog> logList = realm.where(SmsLog.class).findAll();
-            Log.d("realm size", String.valueOf(logList.size()));
-
-            int total_price = 0;
-            for(int idx = 0; idx < logList.size(); idx++)
-            {
-              total_price += logList.get(idx).getPrice();
-            }
+            m_CostManager.insertLog(smsLog);
+            int total_price = m_CostManager.getCurrentCost();
             Log.d("total price",String.valueOf(total_price));
           }
 

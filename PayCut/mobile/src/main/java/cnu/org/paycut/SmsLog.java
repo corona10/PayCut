@@ -57,4 +57,5 @@ public class SmsLog extends RealmObject{
   public String getStore() {
     return store;
   }
+
 }
